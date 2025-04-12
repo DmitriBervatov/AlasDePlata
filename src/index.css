@@ -39,6 +39,13 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-alas-de-plata: "Poppins";
+  --color-primary-alas-de-plata: #3b4671;
+  --color-second-alas-de-plata: #cc9f76;
+  --color-third-alas-de-plata: #eacfb5;
+  --color-fourth-alas-de-plata: #808075;
+  --color-fifth-alas-de-plata: #aa8a0f;
 }
 
 :root {
