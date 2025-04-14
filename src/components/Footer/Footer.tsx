@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <footer className="bg-primary-alas-de-plata px-4 py-2 text-white mt-8">
       <div className="container mx-auto flex flex-col justify-between">
-        <div className="flex justify-between items-center gap-2">
+        <div className="grid grid-cols-2 lg:flex lg:flex-row justify-between items-start  gap-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-4">
               <img src="./images/logo.png" alt="Logo" />
@@ -27,37 +27,69 @@ const Footer = () => {
           <div className="flex flex-col gap-2">
             <span>Compañia</span>
             <ul className="flex flex-col gap-2">
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Sobre Nosotros</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Nuestros aviones</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Trabaja con nosotros</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Noticias</li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Sobre Nosotros
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Nuestros aviones
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Trabaja con nosotros
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Noticias
+              </li>
             </ul>
           </div>
           <div className="flex flex-col gap-2">
             <span>Destinos</span>
             <ul className="flex flex-col gap-2">
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Europa</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Asia</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">America</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Africa</li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Europa
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Asia
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                America
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Africa
+              </li>
             </ul>
           </div>
           <div className="flex flex-col gap-2">
             <span>Servicios</span>
             <ul className="flex flex-col gap-2">
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Check-in online</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Estado de vuelo</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Equipaje</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Asistente especial</li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Check-in online
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Estado de vuelo
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Equipaje
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Asistente especial
+              </li>
             </ul>
           </div>
           <div className="flex flex-col gap-2">
             <span>Ayuda</span>
             <ul className="flex flex-col gap-2">
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Contacto</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Preguntas frecuentes</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Reclamaciones</li>
-              <li className="text-gray-300/80 cursor-pointer hover:underline">Politica de privacidad</li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Contacto
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Preguntas frecuentes
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Reclamaciones
+              </li>
+              <li className="text-gray-300/80 cursor-pointer hover:underline">
+                Politica de privacidad
+              </li>
             </ul>
           </div>
         </div>

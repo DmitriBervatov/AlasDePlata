@@ -25,6 +25,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Label } from "@radix-ui/react-label";
+import { format } from "date-fns";
 import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
@@ -49,17 +50,23 @@ const passengers = [
 ];
 
 const Home = () => {
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [dateOrigin, setDateOrigin] = useState<Date | undefined>(undefined);
+  const [dateEnd, setDateEnd] = useState<Date | undefined>(undefined);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
 
   return (
-    <>
+    <div className="bg-gray-100">
       <motion.div className="h-[30rem] bg-cover bg-center bg-no-repeat bg-[url('/images/airplane/airplane-banner.jpg')]">
-        <div className="container mx-auto flex flex-col gap-2 h-[30rem] justify-center items-center text-white">
-          <h1 className="font-bold text-5xl">
+        <div className="container mx-auto max-sm:p-8 flex flex-col gap-2 h-[30rem] justify-center items-center text-white">
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="font-bold text-5xl"
+          >
             Descubre el Mundo con Alas de Plata
-          </h1>
+          </motion.h1>
           <span className="text-xl font-semibold">
             Vuelos cómodos, seguros y al mejor precio para tus próximas
             aventuras
@@ -81,82 +88,96 @@ const Home = () => {
         viewport={{ once: false, amount: 0.2 }}
         className="bottom-0 left-1/2 transform flex items-center justify-center -translate-y-6 mx-auto"
       >
-        <Tabs defaultValue="fly" className="w-[800px]">
+        <Tabs defaultValue="fly" className="w-[45rem] max-md:w-[28rem] max-sm:w-[22rem]">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="fly">Vuelos</TabsTrigger>
             <TabsTrigger value="hotel">Hoteles</TabsTrigger>
             <TabsTrigger value="packages">Paquetes</TabsTrigger>
           </TabsList>
           <TabsContent value="fly">
-            <Card>
-              <CardContent className="grid grid-cols-6 gap-4">
-                <div className="flex flex-col gap-2 col-span-3">
+            <Card className="">
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6  gap-4">
+                <div className="flex flex-col gap-2 lg:col-span-3">
                   <Label>Origen</Label>
                   <Input placeholder="Ciudad de origen" />
                 </div>
 
-                <div className="flex flex-col gap-2 col-span-3">
+                <div className="flex flex-col gap-2 lg:col-span-3">
                   <Label>Destino</Label>
                   <Input placeholder="Ciudad de destino" />
                 </div>
 
-                <div className="flex flex-col gap-2 col-span-2">
+                <div className="flex flex-col gap-2 lg:col-span-2">
                   <Label>Fecha de Salida</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-[240px] pl-3 text-left font-normal flex items-center justify-start"
+                          "w-full pl-3 text-left font-normal flex items-center justify-start"
                         )}
                       >
-                        <CalendarIcon />
-                        <span className="text-left">Selecciona una fecha</span>
+                        {dateOrigin ? (
+                          format(dateOrigin, "dd/MM/yyyy")
+                        ) : (
+                          <>
+                            <CalendarIcon />
+                            <span className="text-left">
+                              Selecciona una fecha
+                            </span>
+                          </>
+                        )}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
-                        selected={date}
-                        onSelect={setDate}
+                        selected={dateOrigin}
+                        onSelect={setDateOrigin}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")
                         }
-                        initialFocus
                       />
                     </PopoverContent>
                   </Popover>
                 </div>
 
-                <div className="flex flex-col gap-2 col-span-2">
+                <div className="flex flex-col gap-2 lg:col-span-2">
                   <Label>Fecha de Regreso</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-[240px] pl-3 text-left font-normal flex items-center justify-start"
+                          "w-full pl-3 text-left font-normal flex items-center justify-start"
                         )}
                       >
-                        <CalendarIcon />
-                        <span className="text-left">Selecciona una fecha</span>
+                        {dateEnd ? (
+                          format(dateEnd, "dd/MM/yyyy")
+                        ) : (
+                          <>
+                            <CalendarIcon />
+                            <span className="text-left">
+                              Selecciona una fecha
+                            </span>
+                          </>
+                        )}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
-                        selected={date}
-                        onSelect={setDate}
+                        selected={dateEnd}
+                        onSelect={setDateEnd}
                         disabled={(date) =>
                           date > new Date() || date < new Date("1900-01-01")
                         }
-                        initialFocus
                       />
                     </PopoverContent>
                   </Popover>
                 </div>
 
-                <div className="flex flex-col gap-2 col-span-2">
+                <div className="flex flex-col gap-2 lg:col-span-2">
                   <Label>Pasajeros</Label>
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
@@ -170,7 +191,7 @@ const Home = () => {
                           ? passengers.find(
                               (passenger) => passenger.value === value
                             )?.label
-                          : "Selecciona un pasajero "}
+                          : "Cantidad"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
@@ -245,7 +266,7 @@ const Home = () => {
           </TabsContent>
         </Tabs>
       </motion.div>
-      <div className="container mx-auto flex flex-col gap-8 mt-4">
+      <div className="container mx-auto flex flex-col gap-8 mt-4 p-4">
         <motion.h2
           initial={{
             opacity: 0,
@@ -293,7 +314,7 @@ const Home = () => {
             scale: 1,
           }}
           transition={{ duration: 0.5 }}
-          className="flex items-center justify-center gap-12 my-12"
+          className="flex items-center justify-center gap-12 my-12 p-4"
         >
           <img src="./images/icons/airplane-img-1.png" alt="icon-plane" />
           <div className="flex flex-col w-[42rem] gap-4">
@@ -308,7 +329,7 @@ const Home = () => {
           </div>
         </motion.div>
 
-        <div className="flex flex-row items-center justify-center gap-8 my-4">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 my-4">
           <motion.div
             initial={{
               opacity: 0,
@@ -383,13 +404,12 @@ const Home = () => {
             />
             <div className="flex flex-col mx-4">
               <span className="font-bold uppercase">
-                ¿Listo para la aventura?
+                Vive la experiencia premium
               </span>
               <p className="font-semibold text-justify">
-                Usted merece llegar renovado, así que póngase cómodo en una de
-                nuestras lujosas cabinas, relájese con su comida y bebida
-                favoritas, y disfrute de una amplia variedad de opciones de
-                entretenimiento gratuito.
+                Disfruta de un servicio exclusivo con comodidades de primera
+                clase, atención personalizada y detalles que harán de tu viaje
+                una experiencia inolvidable.
               </p>
             </div>
           </motion.div>
@@ -425,19 +445,18 @@ const Home = () => {
             />
             <div className="flex flex-col mx-4">
               <span className="font-bold uppercase">
-                ¿Listo para la aventura?
+                Servicio de calidad garantizado
               </span>
               <p className="font-semibold text-justify">
-                Usted merece llegar renovado, así que póngase cómodo en una de
-                nuestras lujosas cabinas, relájese con su comida y bebida
-                favoritas, y disfrute de una amplia variedad de opciones de
-                entretenimiento gratuito.
+                En Alas de Plata, nos esforzamos por ofrecer un servicio de
+                calidad excepcional, asegurándonos de que cada detalle de tu
+                viaje sea perfecto y memorable.
               </p>
             </div>
           </motion.div>
         </div>
 
-        <div className="flex flex-col gap-4 w-[50rem] mx-auto my-10">
+        <div className="flex flex-col gap-4 mx-auto my-10 p-4">
           <motion.div
             initial={{
               opacity: 0,
@@ -451,17 +470,16 @@ const Home = () => {
             }}
             className="flex justify-center gap-12 mt-12 text-primary-alas-de-plata"
           >
-            <img src="./images/icons/mapamundi.png" alt="avion" />
+            <img
+              src="./images/icons/mapamundi.png"
+              alt="avion"
+              className="max-lg:h-20 max-lg:w-20"
+            />
             <div className="flex flex-col gap-4">
-              <span className="uppercase font-bold">
-                Explorar Destinos y requisitos de viaje
-              </span>
-
+              <span className="uppercase font-bold">Explorar Destinos</span>
               <p className="font-semibold">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cum
-                doloribus atque dolore animi deserunt, inventore explicabo
-                recusandae facilis earum labore tempora magnam rem quae ipsum
-                omnis. Debitis vero autem quos.
+                Descubre destinos fascinantes y prepárate para tu próxima
+                aventura con Alas de Plata.
               </p>
             </div>
           </motion.div>
@@ -478,22 +496,39 @@ const Home = () => {
             }}
             className="flex justify-center gap-12 mt-12 text-primary-alas-de-plata"
           >
-            <img src="./images/icons/mapa-avion-icono.png" alt="mapa" />
+            <img
+              src="./images/icons/mapamundi.png"
+              alt="avion"
+              className="max-lg:h-20 max-lg:w-20"
+            />
             <div className="flex flex-col gap-4">
               <span className="uppercase font-bold">
                 Todo lo que necesita en un solo lugar
               </span>
-              <p className="font-semibold">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Cum
-                doloribus atque dolore animi deserunt, inventore explicabo
-                recusandae facilis earum labore tempora magnam rem quae ipsum
-                omnis. Debitis vero autem quos.
+              <p className="font-semibold ">
+                Descubre destinos fascinantes y prepárate para tu próxima
+                aventura con Alas de Plata.
               </p>
             </div>
           </motion.div>
+          <motion.div
+            initial={{
+              opacity: 0,
+              translateY: -50,
+              scale: 0.8,
+            }}
+            whileInView={{
+              opacity: 1,
+              translateY: 0,
+              scale: 1,
+            }}
+            className="flex justify-center gap-12 mt-12 text-primary-alas-de-plata"
+          >
+            <div className="flex flex-col gap-4"></div>
+          </motion.div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
