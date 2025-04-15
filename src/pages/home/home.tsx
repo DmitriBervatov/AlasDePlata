@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -88,7 +87,10 @@ const Home = () => {
         viewport={{ once: false, amount: 0.2 }}
         className="bottom-0 left-1/2 transform flex items-center justify-center -translate-y-6 mx-auto"
       >
-        <Tabs defaultValue="fly" className="w-[45rem] max-md:w-[28rem] max-sm:w-[22rem]">
+        <Tabs
+          defaultValue="fly"
+          className="w-[45rem] max-md:w-[28rem] max-sm:w-[22rem]"
+        >
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="fly">Vuelos</TabsTrigger>
             <TabsTrigger value="hotel">Hoteles</TabsTrigger>
@@ -241,11 +243,13 @@ const Home = () => {
                 <CardDescription>Card description</CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Card content</p>
+                <p>
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                  Facere praesentium vero magni voluptate ea necessitatibus?
+                  Magni voluptatem atque alias a maxime consectetur dolore quos
+                  vel qui maiores, quidem, placeat eum!
+                </p>
               </CardContent>
-              <CardFooter>
-                <p>Card footer</p>
-              </CardFooter>
             </Card>
           </TabsContent>
           <TabsContent value="packages">
@@ -257,11 +261,13 @@ const Home = () => {
                 <CardDescription>Card description</CardDescription>
               </CardHeader>
               <CardContent>
-                <p>Card content</p>
+                <p>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Cumque, ad. Omnis et veniam in! Iste est, cum eaque modi
+                  libero repudiandae eum dolores, neque quaerat quae nihil quas!
+                  Corrupti, delectus.
+                </p>
               </CardContent>
-              <CardFooter>
-                <p>Card footer</p>
-              </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>
@@ -347,11 +353,6 @@ const Home = () => {
             whileTap={{
               scale: 0.95,
             }}
-            drag
-            whileDrag={{
-              scale: 1.05,
-            }}
-            dragConstraints={{ left: -10, right: 10, top: -10, bottom: 10 }}
             className="flex flex-col w-[20rem] text-primary-alas-de-plata gap-4"
           >
             <img
@@ -389,11 +390,6 @@ const Home = () => {
             whileTap={{
               scale: 0.95,
             }}
-            drag
-            whileDrag={{
-              scale: 1.05,
-            }}
-            dragConstraints={{ left: -10, right: 10, top: -10, bottom: 10 }}
             className="flex flex-col w-[20rem] text-primary-alas-de-plata gap-4"
           >
             <img
@@ -430,11 +426,6 @@ const Home = () => {
             whileTap={{
               scale: 0.95,
             }}
-            drag
-            whileDrag={{
-              scale: 1.05,
-            }}
-            dragConstraints={{ left: -10, right: 10, top: -10, bottom: 10 }}
             className="flex flex-col w-[20rem] text-primary-alas-de-plata gap-4"
           >
             <img
@@ -473,9 +464,9 @@ const Home = () => {
             <img
               src="./images/icons/mapamundi.png"
               alt="avion"
-              className="max-lg:h-20 max-lg:w-20"
+              className="w-40 h-40 max-lg:h-20 max-lg:w-20"
             />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 w-2/4">
               <span className="uppercase font-bold">Explorar Destinos</span>
               <p className="font-semibold">
                 Descubre destinos fascinantes y prepárate para tu próxima
@@ -499,15 +490,17 @@ const Home = () => {
             <img
               src="./images/icons/mapamundi.png"
               alt="avion"
-              className="max-lg:h-20 max-lg:w-20"
+              className="w-40 h-40 max-lg:h-20 max-lg:w-20"
             />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 w-2/4">
               <span className="uppercase font-bold">
                 Todo lo que necesita en un solo lugar
               </span>
-              <p className="font-semibold ">
-                Descubre destinos fascinantes y prepárate para tu próxima
-                aventura con Alas de Plata.
+              <p className="font-semibold">
+                Encuentra todo lo que necesitas para planificar tu viaje ideal
+                con Alas de Plata. Desde vuelos y hoteles hasta paquetes
+                personalizados, te ofrecemos una experiencia completa para que
+                disfrutes de tus aventuras sin preocupaciones.
               </p>
             </div>
           </motion.div>
