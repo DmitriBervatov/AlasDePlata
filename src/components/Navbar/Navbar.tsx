@@ -20,7 +20,7 @@ const Navbar = () => {
         {/* Logo */}
         <div className="flex flex-row gap-4 justify-center items-center">
           <div className="flex justify-center items-center gap-4">
-            <img src="./images/logo.png" alt="Logo" />
+            <img src="./images/logo.png" alt="Logo" className="h-10 w-10" />
             <h1 className="text-white font-bold">Airline</h1>
           </div>
           {/* Mobile Menu Button */}
@@ -122,7 +122,7 @@ const Navbar = () => {
               initial={{ opacity: 0, translateY: -20 }}
               animate={{ opacity: 1, translateY: 0 }}
               exit={{ opacity: 0, translateY: -20 }}
-              className="absolute top-16 left-0 w-full bg-primary-alas-de-plata text-white flex flex-col gap-4 p-4 lg:hidden"
+              className="absolute top-12 left-0 w-full bg-primary-alas-de-plata text-white flex flex-col gap-4 p-4 lg:hidden"
             >
               <NavigationMenu>
                 <NavigationMenuList className="flex flex-row gap-4">

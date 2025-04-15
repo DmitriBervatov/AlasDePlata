@@ -11,7 +11,11 @@ const Footer = () => {
         <div className="grid grid-cols-2 lg:flex lg:flex-row justify-between items-start  gap-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-4">
-              <img src="./images/logo.png" alt="Logo" />
+              <img
+                src="./images/logo.png"
+                alt="Logo"
+                className="w-12 h-12 rounded-full"
+              />
               <h1 className="font-bold">Alas de Plata</h1>
             </div>
             <p className="text-sm max-w-sm break-words mb-2">
