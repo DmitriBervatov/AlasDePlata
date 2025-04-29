@@ -1,5 +1,6 @@
 import { Contact, Flights, Home, Reservations } from "@/pages";
 import {
+  Confirmation,
   Fares,
   FlightsReservation,
   Passengers,
@@ -33,6 +34,10 @@ function App() {
           <Route
             path="reservations/flights/:id/payment"
             element={<Payment />}
+          />
+          <Route
+            path="reservations/flights/:id/confirmation"
+            element={<Confirmation />}
           />
         </Route>
       </Routes>

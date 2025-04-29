@@ -37,7 +37,7 @@ const Navbar = () => {
               alt="Logo"
               className="h-10 w-10 rounded-full"
             />
-            <h1 className="text-white font-bold">Airline</h1>
+            <span className="text-white font-bold">Airline</span>
           </Link>
           {/* Mobile Menu Button */}
           <button
