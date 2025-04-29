@@ -19,6 +19,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { CalendarIcon, Minus, Plus } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const FlightSearchForm = () => {
   const [departureDate, setDepartureDate] = useState<Date>();
@@ -129,9 +130,8 @@ const FlightSearchForm = () => {
           </Popover>
         </div>
 
-        <div className="flex flex-col gap-4">
-          <Label htmlFor="origin">Pasajeros</Label>
-          <div className="flex">
+        <div className="grid grid-cols-4 items-center justify-between mt-4 gap-8 col-span-2">
+          <div className="flex justify-between gap-4">
             <div className="flex flex-col">
               <span className="text-xl">Adultos</span>
               <span className="text-sm text-gray-500">+12 años</span>
@@ -139,10 +139,62 @@ const FlightSearchForm = () => {
             <div className="flex flex-row items-center justify-center gap-4">
               <Minus className="w-4 h-4" />
               <span>1</span>
-              <Plus className="w-4 h-4 border border-gray-500" />
+              <Plus className="w-4 h-4 border border-gray-500 rounded" />
+            </div>
+          </div>
+          <div className="flex justify-between gap-4">
+            <div className="flex flex-col">
+              <span className="text-xl">Adolescentes</span>
+              <span className="text-sm text-gray-500">12 - 17 años</span>
+            </div>
+            <div className="flex flex-row items-center justify-center gap-4">
+              <Minus className="w-4 h-4" />
+              <span>1</span>
+              <Plus className="w-4 h-4 border border-gray-500 rounded" />
+            </div>
+          </div>
+          <div className="flex justify-between gap-4">
+            <div className="flex flex-col">
+              <span className="text-xl">Niños</span>
+              <span className="text-sm text-gray-500">2 - 11 años</span>
+            </div>
+            <div className="flex flex-row items-center justify-center gap-4">
+              <Minus className="w-4 h-4" />
+              <span>1</span>
+              <Plus className="w-4 h-4 border border-gray-500 rounded" />
+            </div>
+          </div>
+          <div className="flex justify-between gap-4">
+            <div className="flex flex-col">
+              <span className="text-xl">Adultos</span>
+              <span className="text-sm text-gray-500">0 - 2 años</span>
+            </div>
+            <div className="flex flex-row items-center justify-center gap-4">
+              <Minus className="w-4 h-4" />
+              <span>1</span>
+              <Plus className="w-4 h-4 border border-gray-500 rounded" />
             </div>
           </div>
         </div>
+
+        <div className="flex flex-col gap-4 col-span-2">
+          <Label htmlFor="origin">Clase</Label>
+          <Select>
+            <SelectTrigger className="w-full cursor-pointer">
+              <SelectValue placeholder="Seleccione destino" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="light">Económica</SelectItem>
+              <SelectItem value="dark">Premium Economy</SelectItem>
+              <SelectItem value="system">Business</SelectItem>
+              <SelectItem value="system">Primera</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <Link to="/reservations/flights" className="col-span-2">
+          <Button className="cursor-pointer w-full">Buscar vuelos</Button>
+        </Link>
       </div>
     </div>
   );

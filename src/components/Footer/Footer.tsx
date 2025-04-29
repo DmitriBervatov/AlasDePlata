@@ -12,7 +12,7 @@ const Footer = () => {
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-4">
               <img
-                src="./images/logo.png"
+                src="/images/logo.png"
                 alt="Logo"
                 className="w-12 h-12 rounded-full"
               />

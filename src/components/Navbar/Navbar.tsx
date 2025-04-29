@@ -33,7 +33,7 @@ const Navbar = () => {
         <div className="flex flex-row gap-4 justify-center items-center">
           <Link to="/" className="flex justify-center items-center gap-4">
             <img
-              src="./images/logo.png"
+              src="/images/logo.png"
               alt="Logo"
               className="h-10 w-10 rounded-full"
             />
@@ -453,7 +453,7 @@ const Navbar = () => {
             </MenubarMenu>
           </Menubar>
 
-          <Link to="/reservation">
+          <Link to="/reservations">
             <Button className="cursor-pointer">Reservar</Button>
           </Link>
           <Menubar
