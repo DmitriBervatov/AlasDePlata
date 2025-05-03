@@ -7,22 +7,12 @@ import {
   NavigationMenuTrigger,
 } from "@/shared/ui/navigation-menu";
 
-import { BadgePercent, Globe, Hourglass, Search, TreePalm } from "lucide-react";
+import { BadgePercent, Hourglass, TreePalm } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { RiAirplayLine, RiCloseLine, RiMenu3Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarTrigger,
-} from "../ui/menubar";
 
 const Navbar = () => {
   const [menuBar, setMenuBar] = useState(false);
@@ -411,30 +401,34 @@ const Navbar = () => {
 
         {/* Buttons */}
         {/* User not authenticated */}
-        {/* <div className="flex justify-center items-center gap-4">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-            className="text-white"
-          >
-            <Button asChild variant="ghost" className="cursor-pointer">
-              <span>Iniciar Sesion</span>
-            </Button>
-          </motion.button>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Button asChild className="cursor-pointer">
-              <span>Registrarse</span>
-            </Button>
-          </motion.div>
-        </div> */}
+        <div className="flex justify-center items-center gap-4">
+          <Link to="/login">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="text-white"
+            >
+              <Button asChild variant="ghost" className="cursor-pointer">
+                <span>Iniciar Sesion</span>
+              </Button>
+            </motion.button>
+          </Link>
+          <Link to="/signup">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Button asChild className="cursor-pointer">
+                <span>Registrarse</span>
+              </Button>
+            </motion.div>
+          </Link>
+        </div>
 
         {/* User authenticated */}
-        <div className="flex justify-center items-center gap-4">
+        {/* <div className="flex justify-center items-center gap-4">
           <Search className="cursor-pointer" />
           <Menubar
             className="p-0 border-none bg-transparent shadow-none focus:ring-0 focus:outline-none focus-visible:ring-0 h-8 w-8 rounded-full"
@@ -481,7 +475,7 @@ const Navbar = () => {
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
-        </div>
+        </div> */}
       </nav>
     </header>
   );

@@ -1,4 +1,6 @@
 import { Contact, Flights, Home, Reservations } from "@/features";
+import Login from "@/features/auth/pages/log-in/Login";
+import Signup from "@/features/auth/pages/sign-up/Signup";
 import {
   Confirmation,
   Fares,
@@ -39,6 +41,8 @@ function App() {
             path="reservations/flights/:id/confirmation"
             element={<Confirmation />}
           />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Route>
       </Routes>
     </>
