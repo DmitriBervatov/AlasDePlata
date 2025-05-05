@@ -1,3 +1,4 @@
+import { useDestinationsFilter } from "@/features/destinations/store";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -6,16 +7,31 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/shared/ui/navigation-menu";
-
-import { BadgePercent, Hourglass, TreePalm } from "lucide-react";
+import { BadgePercent, Globe, Hourglass, Search, TreePalm } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { RiAirplayLine, RiCloseLine, RiMenu3Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "../ui/menubar";
 
 const Navbar = () => {
-  const [menuBar, setMenuBar] = useState(false);
+  const { setSelectedContinents } = useDestinationsFilter();
+  const [authenticated, setAuthenticated] = useState<boolean>(true);
+  const [menuBar, setMenuBar] = useState<boolean>(false);
+
+  const handleLogout = () => {
+    console.warn("You are logouted");
+  };
 
   return (
     <header className="bg-primary-alas-de-plata px-4 py-2">
@@ -54,7 +70,11 @@ const Navbar = () => {
                   <ul className="grid grid-cols-2 gap-4 p-4 md:w-[400px] lg:w-[500px]">
                     <li className="cursor-pointer">
                       <NavigationMenuLink asChild>
-                        <div className="flex flex-row gap-4 items-center">
+                        <Link
+                          to="/destinations"
+                          onClick={() => setSelectedContinents(["europe"])}
+                          className="flex flex-row gap-4 items-center"
+                        >
                           <div className="flex items-center justify-center">
                             <img
                               src="/images/destinations/europa-destiny.jpg"
@@ -69,12 +89,18 @@ const Navbar = () => {
                               paisajes únicos en cada rincón del continente.
                             </p>
                           </div>
-                        </div>
+                        </Link>
                       </NavigationMenuLink>
                     </li>
                     <li className="cursor-pointer">
                       <NavigationMenuLink asChild>
-                        <div className="flex flex-row gap-4 items-center">
+                        <Link
+                          to="/destinations"
+                          onClick={() =>
+                            setSelectedContinents(["north_america"])
+                          }
+                          className="flex flex-row gap-4 items-center"
+                        >
                           <div className="flex items-center justify-center">
                             <img
                               src="/images/destinations/america-destiny.png"
@@ -91,12 +117,16 @@ const Navbar = () => {
                               ciudades hasta maravillas naturales únicas.
                             </p>
                           </div>
-                        </div>
+                        </Link>
                       </NavigationMenuLink>
                     </li>
                     <li className="cursor-pointer">
                       <NavigationMenuLink asChild>
-                        <div className="flex flex-row gap-4 items-center">
+                        <Link
+                          to="/destinations"
+                          onClick={() => setSelectedContinents(["asia"])}
+                          className="flex flex-row gap-4 items-center"
+                        >
                           <div className="flex items-center justify-center">
                             <img
                               src="/images/destinations/asia-destiny.png"
@@ -111,12 +141,16 @@ const Navbar = () => {
                               únicos.
                             </p>
                           </div>
-                        </div>
+                        </Link>
                       </NavigationMenuLink>
                     </li>
                     <li className="cursor-pointer">
                       <NavigationMenuLink asChild>
-                        <div className="flex flex-row gap-4 items-center">
+                        <Link
+                          to="/destinations"
+                          onClick={() => setSelectedContinents(["africa"])}
+                          className="flex flex-row gap-4 items-center"
+                        >
                           <div className="flex items-center justify-center">
                             <img
                               src="/images/destinations/africa-destiny.jpg"
@@ -130,12 +164,16 @@ const Navbar = () => {
                               Explora África: naturaleza, cultura y aventura.
                             </p>
                           </div>
-                        </div>
+                        </Link>
                       </NavigationMenuLink>
                     </li>
                     <li className="cursor-pointer col-span-2">
                       <NavigationMenuLink asChild>
-                        <div className="flex flex-row gap-4 items-center">
+                        <Link
+                          to="/destinations"
+                          onClick={() => setSelectedContinents(["oceania"])}
+                          className="flex flex-row gap-4 items-center"
+                        >
                           <div className="flex items-center justify-center">
                             <img
                               src="/images/destinations/oceania-destiny.jpg"
@@ -152,7 +190,7 @@ const Navbar = () => {
                               exótica y culturas fascinantes en cada isla.
                             </p>
                           </div>
-                        </div>
+                        </Link>
                       </NavigationMenuLink>
                     </li>
                   </ul>
@@ -401,81 +439,88 @@ const Navbar = () => {
 
         {/* Buttons */}
         {/* User not authenticated */}
-        <div className="flex justify-center items-center gap-4">
-          <Link to="/login">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="text-white"
+        {authenticated ? (
+          <div className="flex justify-center items-center gap-4">
+            <Search className="cursor-pointer" />
+            <Menubar
+              className="p-0 border-none bg-transparent shadow-none focus:ring-0 focus:outline-none focus-visible:ring-0 h-8 w-8 rounded-full"
+              style={{ minWidth: 0, minHeight: 0 }}
             >
-              <Button asChild variant="ghost" className="cursor-pointer">
-                <span>Iniciar Sesion</span>
-              </Button>
-            </motion.button>
-          </Link>
-          <Link to="/signup">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
+              <MenubarMenu>
+                <MenubarTrigger
+                  className="p-0 border-none bg-transparent shadow-none focus:ring-0 focus:outline-none focus-visible:ring-0 active:bg-transparent focus:bg-transparent hover:bg-transparent data-[state=open]:bg-transparent"
+                  style={{ minWidth: 0, minHeight: 0 }}
+                >
+                  <Globe className="cursor-pointer" />
+                </MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem>Español</MenubarItem>
+                  <MenubarItem>Ingles</MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
+
+            <Link to="/reservations">
+              <Button className="cursor-pointer">Reservar</Button>
+            </Link>
+            <Menubar
+              className="p-0 border-none bg-transparent shadow-none focus:ring-0 focus:outline-none focus-visible:ring-0 h-8 w-8 rounded-full"
+              style={{ minWidth: 0, minHeight: 0 }}
             >
-              <Button asChild className="cursor-pointer">
-                <span>Registrarse</span>
-              </Button>
-            </motion.div>
-          </Link>
-        </div>
-
-        {/* User authenticated */}
-        {/* <div className="flex justify-center items-center gap-4">
-          <Search className="cursor-pointer" />
-          <Menubar
-            className="p-0 border-none bg-transparent shadow-none focus:ring-0 focus:outline-none focus-visible:ring-0 h-8 w-8 rounded-full"
-            style={{ minWidth: 0, minHeight: 0 }}
-          >
-            <MenubarMenu>
-              <MenubarTrigger
-                className="p-0 border-none bg-transparent shadow-none focus:ring-0 focus:outline-none focus-visible:ring-0 active:bg-transparent focus:bg-transparent hover:bg-transparent data-[state=open]:bg-transparent"
-                style={{ minWidth: 0, minHeight: 0 }}
+              <MenubarMenu>
+                <MenubarTrigger
+                  className="p-0 border-none bg-transparent shadow-none focus:ring-0 focus:outline-none focus-visible:ring-0 active:bg-transparent focus:bg-transparent hover:bg-transparent data-[state=open]:bg-transparent"
+                  style={{ minWidth: 0, minHeight: 0 }}
+                >
+                  <Avatar>
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                </MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem asChild>
+                    <Link to="/profile">
+                      Mi Cuenta <MenubarShortcut>⌘T</MenubarShortcut>
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/settings">Configuraciones</Link>
+                  </MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem onClick={handleLogout}>
+                    Cerrar Sesion
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center gap-4">
+            <Link to="/login">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="text-white"
               >
-                <Globe className="cursor-pointer" />
-              </MenubarTrigger>
-              <MenubarContent>
-                <MenubarItem>Español</MenubarItem>
-                <MenubarItem>Ingles</MenubarItem>
-              </MenubarContent>
-            </MenubarMenu>
-          </Menubar>
-
-          <Link to="/reservations">
-            <Button className="cursor-pointer">Reservar</Button>
-          </Link>
-          <Menubar
-            className="p-0 border-none bg-transparent shadow-none focus:ring-0 focus:outline-none focus-visible:ring-0 h-8 w-8 rounded-full"
-            style={{ minWidth: 0, minHeight: 0 }}
-          >
-            <MenubarMenu>
-              <MenubarTrigger
-                className="p-0 border-none bg-transparent shadow-none focus:ring-0 focus:outline-none focus-visible:ring-0 active:bg-transparent focus:bg-transparent hover:bg-transparent data-[state=open]:bg-transparent"
-                style={{ minWidth: 0, minHeight: 0 }}
+                <Button asChild variant="ghost" className="cursor-pointer">
+                  <span>Iniciar Sesion</span>
+                </Button>
+              </motion.button>
+            </Link>
+            <Link to="/signup">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ duration: 0.2 }}
               >
-                <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              </MenubarTrigger>
-              <MenubarContent>
-                <MenubarItem>
-                  Mi Cuenta <MenubarShortcut>⌘T</MenubarShortcut>
-                </MenubarItem>
-                <MenubarItem>Configuraciones</MenubarItem>
-                <MenubarSeparator />
-                <MenubarItem>Cerrar Sesion</MenubarItem>
-              </MenubarContent>
-            </MenubarMenu>
-          </Menubar>
-        </div> */}
+                <Button asChild className="cursor-pointer">
+                  <span>Registrarse</span>
+                </Button>
+              </motion.div>
+            </Link>
+          </div>
+        )}
       </nav>
     </header>
   );
