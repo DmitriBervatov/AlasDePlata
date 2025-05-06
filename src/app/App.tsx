@@ -1,6 +1,7 @@
-import { Contact, Flights, Home, Reservations } from "@/features";
+import { Contact, Home, Reservations } from "@/features";
 import Login from "@/features/auth/pages/log-in/Login";
 import Signup from "@/features/auth/pages/sign-up/Signup";
+import { useAuth } from "@/features/auth/store";
 import Destinations from "@/features/destinations/pages/Destinations";
 import {
   Confirmation,
@@ -10,37 +11,43 @@ import {
   Payment,
   Seats,
   Services,
-} from "@/features/reservations";
+} from "@/features/reservations/pages/flights-reservation";
 import Profile from "@/features/user/pages/profile/Profile";
 import Layout from "@/shared/layout/Layout";
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
+  const { loadToken } = useAuth();
+
+  useEffect(() => {
+    loadToken();
+  }, [loadToken]);
+
   return (
     <>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="contact" element={<Contact />} />
-          <Route path="flights" element={<Flights />} />
           <Route path="reservations" element={<Reservations />} />
           <Route path="reservations/flights" element={<FlightsReservation />} />
-          <Route path="reservations/flights/:id/fares" element={<Fares />} />
+          <Route path="reservations/flights/:flightId/fares" element={<Fares />} />
           <Route
-            path="reservations/flights/:id/passengers"
+            path="reservations/flights/:flightId/passengers"
             element={<Passengers />}
           />
-          <Route path="reservations/flights/:id/seats" element={<Seats />} />
+          <Route path="reservations/flights/:flightId/seats" element={<Seats />} />
           <Route
-            path="reservations/flights/:id/services"
+            path="reservations/flights/:flightId/services"
             element={<Services />}
           />
           <Route
-            path="reservations/flights/:id/payment"
+            path="reservations/flights/:flightId/payment"
             element={<Payment />}
           />
           <Route
-            path="reservations/flights/:id/confirmation"
+            path="reservations/flights/:flightId/confirmation"
             element={<Confirmation />}
           />
 

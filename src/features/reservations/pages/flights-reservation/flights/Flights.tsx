@@ -1,3 +1,4 @@
+import { useFlightSearch } from "@/features/reservations/store/flightSearch";
 import { PageHeader } from "@/shared/page-header";
 import { Button } from "@/shared/ui/button";
 import { Checkbox } from "@/shared/ui/checkbox";
@@ -13,15 +14,44 @@ import { Slider } from "@/shared/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { useState } from "react";
 import { CardInformationFlight } from "../components";
+import { useFlightsDetailSearch } from "@/features/reservations/hooks/useFlights";
 
 const Flights = () => {
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [departureTimeRange, setDepartureTimeRange] = useState([0, 24]);
   const [arrivalTimeRange, setArrivalTimeRange] = useState([0, 24]);
 
+  const flightSearch = useFlightSearch();
+  const params = {
+    origin: flightSearch.origin,
+    destination: flightSearch.destination,
+    departureDate: flightSearch.departureDate
+      ? flightSearch.departureDate.toISOString().split("T")[0]
+      : "",
+    returnDate: flightSearch.returnDate
+      ? flightSearch.returnDate.toISOString().split("T")[0]
+      : "",
+    travelClass: flightSearch.travelClass,
+    adults: flightSearch.adults,
+    children: flightSearch.children,
+    infants: flightSearch.infants,
+    tripType: flightSearch.tripType,
+  };
+
+  const { data: flights } = useFlightsDetailSearch(params);
+
   const formatTime = (hour: number) => {
     return `${hour.toString().padStart(2, "0")}:00`;
   };
+
+  function formatHour(dateString: string) {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  }
 
   return (
     <div className="container mx-auto">
@@ -136,7 +166,8 @@ const Flights = () => {
             <div className="col-span-5 rounded p-4">
               <div className="flex justify-between">
                 <p>
-                  5 <span className="text-gray-500">vuelos encontrados</span>
+                  {flights?.length}{" "}
+                  <span className="text-gray-500">vuelos encontrados</span>
                 </p>
                 <div className="flex gap-4">
                   <Label htmlFor="origin">Ordenar por:</Label>
@@ -154,16 +185,24 @@ const Flights = () => {
                 </div>
               </div>
 
-              {Array.from({ length: 5 }).map((_, index) => (
-                <CardInformationFlight
-                  key={index}
-                  airline="Alas de Plata"
-                  flightNumber="AP1234"
-                  departureTime="08:30"
-                  arrivalTime="11:45"
-                  showFare={false}
-                />
-              ))}
+              {flights &&
+                flights.map((flight) => (
+                  <CardInformationFlight
+                    key={flight.id}
+                    airline={flight.airline}
+                    flightNumber={flight.flightNumber}
+                    departureTime={formatHour(flight.departureTime)}
+                    arrivalTime={formatHour(flight.arrivalTime)}
+                    showFare={false}
+                    originCity={flight.origin}
+                    destinationCity={flight.destination}
+                    flightPrice={flight.flightPrice}
+                    duration={flight.duration}
+                    airportCodeOrigin={flight.airportCodeOrigin}
+                    airportCodeDestination={flight.airportCodeDestination}
+                    flight={flight}
+                  />
+                ))}
             </div>
           </div>
         </TabsContent>

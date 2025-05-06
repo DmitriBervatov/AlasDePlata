@@ -1,3 +1,4 @@
+import { useAuth } from "@/features/auth/store";
 import { useDestinationsFilter } from "@/features/destinations/store";
 import {
   NavigationMenu,
@@ -11,7 +12,7 @@ import { BadgePercent, Globe, Hourglass, Search, TreePalm } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { RiAirplayLine, RiCloseLine, RiMenu3Line } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -25,12 +26,14 @@ import {
 } from "../ui/menubar";
 
 const Navbar = () => {
+  const { isAuthenticated, logout } = useAuth();
   const { setSelectedContinents } = useDestinationsFilter();
-  const [authenticated, setAuthenticated] = useState<boolean>(true);
   const [menuBar, setMenuBar] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    console.warn("You are logouted");
+    logout();
+    navigate("/");
   };
 
   return (
@@ -438,8 +441,7 @@ const Navbar = () => {
         </AnimatePresence>
 
         {/* Buttons */}
-        {/* User not authenticated */}
-        {authenticated ? (
+        {isAuthenticated ? (
           <div className="flex justify-center items-center gap-4">
             <Search className="cursor-pointer" />
             <Menubar

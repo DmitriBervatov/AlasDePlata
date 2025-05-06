@@ -1,3 +1,4 @@
+import { useFlightSearch } from "@/features/reservations/store/flightSearch";
 import { PageHeader } from "@/shared/page-header";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -15,6 +16,12 @@ import { Link } from "react-router-dom";
 import { CardInformationFlight, ReservationSummary } from "../components";
 
 const Passengers = () => {
+  const { selectedFlight } = useFlightSearch();
+
+
+
+
+
   return (
     <div className="container mx-auto">
       <PageHeader
@@ -24,12 +31,19 @@ const Passengers = () => {
         backTo="/reservations/flights/1/fares"
       />
       <CardInformationFlight
-        airline="Alas de Plata"
-        flightNumber="AP1234"
-        arrivalTime="08:30"
-        departureTime="11:45"
+        airline={selectedFlight?.airline || ""}
+        flightNumber={selectedFlight?.flightNumber || ""}
+        arrivalTime={selectedFlight?.arrivalTime || ""}
+        departureTime={selectedFlight?.departureTime || ""}
+        originCity={selectedFlight?.origin || ""}
+        destinationCity={selectedFlight?.destination || ""}
+        airportCodeOrigin={selectedFlight?.airportCodeOrigin || ""}
+        airportCodeDestination={selectedFlight?.airportCodeDestination || ""}
+        duration={selectedFlight?.duration || ""}
         showExtras={false}
         showPriceSection={false}
+        showFare={true}
+        farePrice={599}
       />
 
       <div className="grid grid-cols-4 gap-4 my-4 ">
