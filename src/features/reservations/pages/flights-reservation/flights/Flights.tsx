@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { useState } from "react";
 import { CardInformationFlight } from "../components";
 import { useFlightsDetailSearch } from "@/features/reservations/hooks/useFlights";
+import { parseDate } from "@/lib/dateFormat";
 
 const Flights = () => {
   const [priceRange, setPriceRange] = useState([0, 1000]);
@@ -22,14 +23,18 @@ const Flights = () => {
   const [arrivalTimeRange, setArrivalTimeRange] = useState([0, 24]);
 
   const flightSearch = useFlightSearch();
+
+  const departureDate = parseDate(flightSearch.departureDate);
+  const returnDate = parseDate(flightSearch.returnDate);
+
   const params = {
     origin: flightSearch.origin,
     destination: flightSearch.destination,
-    departureDate: flightSearch.departureDate
-      ? flightSearch.departureDate.toISOString().split("T")[0]
+    departureDate: departureDate
+      ?  departureDate.toISOString().split("T")[0]
       : "",
-    returnDate: flightSearch.returnDate
-      ? flightSearch.returnDate.toISOString().split("T")[0]
+    returnDate: returnDate
+      ? returnDate.toISOString().split("T")[0]
       : "",
     travelClass: flightSearch.travelClass,
     adults: flightSearch.adults,

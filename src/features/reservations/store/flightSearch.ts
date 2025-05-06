@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { Flight } from "../types/flight";
+import { persist } from "zustand/middleware";
 import { Fare } from "../types/fare";
+import { Flight } from "../types/flight";
 
 export enum TripType {
   ONE_WAY = "one-way",
@@ -27,24 +28,9 @@ interface FlightSearchState {
   setSelectedFare: (fare: Fare) => void;
 }
 
-export const useFlightSearch = create<FlightSearchState>((set) => ({
-  origin: "",
-  destination: "",
-  departureDate: null,
-  returnDate: null,
-  adults: 0,
-  teens: 0,
-  children: 0,
-  infants: 0,
-  travelClass: "ECONOMY",
-  tripType: TripType.ONE_WAY,
-  selectedFlight: undefined,
-  setSelectedFlight: (flight: Flight) => set({ selectedFlight: flight }),
-  selectedFare: undefined,
-  setSelectedFare: (fare: Fare) => set({ selectedFare: fare }),
-  setSearch: (data) => set((state) => ({ ...state, ...data })),
-  resetSearch: () =>
-    set({
+export const useFlightSearch = create<FlightSearchState>()(
+  persist(
+    (set) => ({
       origin: "",
       destination: "",
       departureDate: null,
@@ -54,5 +40,30 @@ export const useFlightSearch = create<FlightSearchState>((set) => ({
       children: 0,
       infants: 0,
       travelClass: "ECONOMY",
+      tripType: TripType.ONE_WAY,
+      selectedFlight: undefined,
+      setSelectedFlight: (flight: Flight) => set({ selectedFlight: flight }),
+      selectedFare: undefined,
+      setSelectedFare: (fare: Fare) => set({ selectedFare: fare }),
+      setSearch: (data) => set((state) => ({ ...state, ...data })),
+      resetSearch: () =>
+        set({
+          origin: "",
+          destination: "",
+          departureDate: null,
+          returnDate: null,
+          adults: 0,
+          teens: 0,
+          children: 0,
+          infants: 0,
+          travelClass: "ECONOMY",
+        }),
     }),
-}));
+    {
+      name: "flight-search-storage",
+      partialize: (state) => ({
+        ...state,
+      }),
+    }
+  )
+);

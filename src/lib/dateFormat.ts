@@ -17,3 +17,13 @@ export function formatDateLong(dateString: string) {
     year: "numeric",
   });
 }
+
+export function parseDate(date: unknown): Date | null {
+  if (!date) return null;
+  if (date instanceof Date) return date;
+  if (typeof date === "string") {
+    const d = new Date(date);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  return null;
+}
