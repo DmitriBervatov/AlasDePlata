@@ -34,7 +34,7 @@ const CardInformationFlight = ({
   showExtras = true,
   showPriceSection = true,
   showFare = true,
-  fareLabel = "Óptima",
+  fareLabel,
   farePrice,
   seatLabel,
   originCity,

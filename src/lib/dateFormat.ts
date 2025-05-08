@@ -1,12 +1,7 @@
 export function formatHour(dateString: string) {
   if (!dateString) return "";
-
   const date = new Date(dateString);
-  return date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
 export function formatDateLong(dateString: string) {

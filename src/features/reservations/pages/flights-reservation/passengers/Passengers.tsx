@@ -27,19 +27,20 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { CardInformationFlight, ReservationSummary } from "../components";
 import { useNavigate } from "react-router-dom";
+import { CardInformationFlight, ReservationSummary } from "../components";
 
 const Passengers = () => {
-  const { selectedFlight } = useFlightSearch();
-  // const navigate = useNavigate();
+  const { selectedFlight, setPassengers, selectedFare } = useFlightSearch();
+  const navigate = useNavigate();
   const form = useForm<PassengerFormValues>({
     resolver: zodResolver(passengerSchema),
     defaultValues: defaultPassengerValues,
   });
 
   const onSubmit = (data: PassengerFormValues) => {
-    console.log(data);
+    setPassengers([data]);
+    navigate(`/reservations/flights/${selectedFlight?.id}/seats`);
   };
 
   return (
@@ -48,7 +49,7 @@ const Passengers = () => {
         backLabel="Volver a tarifas"
         title="Información de pasajeros"
         subtitle="Completa los datos de los pasajeros"
-        backTo="/reservations/flights/1/fares"
+        backTo={`/reservations/flights/${selectedFlight?.id}/fares`}
       />
       <CardInformationFlight
         airline={selectedFlight?.airline || ""}
@@ -63,7 +64,8 @@ const Passengers = () => {
         showExtras={false}
         showPriceSection={false}
         showFare={true}
-        farePrice={599}
+        farePrice={selectedFare?.price}
+        fareLabel={selectedFare?.flightClassName}
       />
 
       <div className="grid grid-cols-4 gap-4 my-4">

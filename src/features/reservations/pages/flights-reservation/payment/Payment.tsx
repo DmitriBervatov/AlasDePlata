@@ -1,3 +1,4 @@
+import { useFlightSearch } from "@/features/reservations/store/flightSearch";
 import { PageHeader } from "@/shared/page-header";
 import { Button } from "@/shared/ui/button";
 import { Checkbox } from "@/shared/ui/checkbox";
@@ -12,22 +13,28 @@ import { Link } from "react-router-dom";
 import { CardInformationFlight, ReservationSummary } from "../components";
 
 const Payment = () => {
+  const { selectedFlight } = useFlightSearch();
   const [paymentMethod, setPaymentMethod] = useState("creditCard");
 
   return (
     <div className="container mx-auto">
       <PageHeader
-        backTo="/reservations/flights/1/services"
+        backTo={`/reservations/flights/${selectedFlight!.id}/services`}
         backLabel="Volver a los servicios"
         title="Pago"
         subtitle="Completa el pago para finalizar tu reserva"
       />
 
       <CardInformationFlight
-        airline="Alas de Plata"
-        flightNumber="AP1234"
-        arrivalTime="08:30"
-        departureTime="11:45"
+        airline={selectedFlight!.airline}
+        flightNumber={selectedFlight!.flightNumber}
+        arrivalTime={selectedFlight!.arrivalTime}
+        departureTime={selectedFlight!.departureTime}
+        airportCodeDestination={selectedFlight!.airportCodeDestination}
+        airportCodeOrigin={selectedFlight!.airportCodeOrigin}
+        destinationCity={selectedFlight!.destination}
+        originCity={selectedFlight!.origin}
+        duration={selectedFlight!.duration}
         showExtras={false}
         showPriceSection={false}
         showFare={false}

@@ -1,24 +1,51 @@
+import { useSeatMap } from "@/features/reservations/hooks/useSeatMap";
+import { useFlightSearch } from "@/features/reservations/store/flightSearch";
+import {
+  Seat,
+  SeatStatus,
+  SeatType,
+} from "@/features/reservations/types/seats";
 import { PageHeader } from "@/shared/page-header";
 import { Button } from "@/shared/ui/button";
 import { ArrowRight } from "lucide-react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import { CardInformationFlight, ReservationSummary } from "../components";
 import SeatMap from "./components/SeatMap/SeatMap";
 
-const seatLetters = ["A", "B", "C", "D", "E", "F"];
-const seatRows = Array.from({ length: 30 }, (_, i) => i + 1);
-
-const seatMap: Record<string, "occupied" | "premium" | "emergency" | "normal"> =
-  {
-    "1A": "premium",
-    "1B": "premium",
-    "10C": "emergency",
-    "15D": "occupied",
-  };
-
 const Seats = () => {
-  const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
+  const { selectedFlight, selectedSeat, setSelectedSeat, selectedFare } =
+    useFlightSearch();
+  console.log(selectedFare);
+  const { data: seats } = useSeatMap(selectedFlight!.id);
+
+  const seatRows =
+    seats && seats.length > 0
+      ? Array.from(
+          new Set(
+            seats.map((seat: Seat) => Number(seat.seatNumber.match(/\d+/)?.[0]))
+          )
+        ).sort((a, b) => a - b)
+      : [];
+
+  const seatLetters =
+    seats && seats.length > 0
+      ? Array.from(
+          new Set(
+            seats.map((seat: Seat) => seat.seatNumber.replace(/[0-9]/g, ""))
+          )
+        ).sort()
+      : [];
+
+  const seatMap: Record<
+    string,
+    { seatType: SeatType; seatStatus: SeatStatus }
+  > = {};
+  seats?.forEach((seat: Seat) => {
+    seatMap[seat.seatNumber] = {
+      seatType: seat.seatType,
+      seatStatus: seat.seatStatus,
+    };
+  });
 
   return (
     <div className="container mx-auto">
@@ -26,17 +53,22 @@ const Seats = () => {
         backLabel="Volver a pasajeros"
         title="Selección de asientos"
         subtitle="Elige tu asiento preferido para el vuelo"
-        backTo="/reservations/flights/1/passengers"
+        backTo={`/reservations/flights/${selectedFlight?.id}/passengers`}
       />
 
       <CardInformationFlight
-        airline="Alas de Plata"
-        flightNumber="AP1234"
-        arrivalTime="08:30"
-        departureTime="11:45"
+        airline={selectedFlight!.airline}
+        flightNumber={selectedFlight!.flightNumber}
+        arrivalTime={selectedFlight!.arrivalTime}
+        departureTime={selectedFlight!.departureTime}
         showExtras={false}
         showPriceSection={false}
-        farePrice=""
+        duration={selectedFlight!.duration}
+        airportCodeDestination={selectedFlight!.airportCodeDestination}
+        airportCodeOrigin={selectedFlight!.airportCodeOrigin}
+        destinationCity={selectedFlight!.destination}
+        originCity={selectedFlight!.origin}
+        fareLabel={selectedFare?.flightClassName}
       />
 
       <div className="grid grid-cols-3 gap-4 py-8">
@@ -88,7 +120,7 @@ const Seats = () => {
               seatRows={seatRows}
               seatLetters={seatLetters}
               seatMap={seatMap}
-              selectedSeat={selectedSeat}
+              selectedSeat={selectedSeat!}
               setSelectedSeat={setSelectedSeat}
             />
           </div>
@@ -98,7 +130,7 @@ const Seats = () => {
               <span>Asiento seleccionado: </span>
               <span className="font-bold">24E</span>
             </div>
-            <Link to="/reservations/flights/1/services">
+            <Link to={`/reservations/flights/${selectedFlight?.id}/services`}>
               <Button>
                 Continuar <ArrowRight />
               </Button>

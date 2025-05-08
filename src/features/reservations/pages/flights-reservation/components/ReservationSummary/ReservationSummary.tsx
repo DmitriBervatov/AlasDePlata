@@ -56,8 +56,8 @@ const ReservationSummary = ({
       {services.length > 0 && (
         <div className="flex flex-col gap-2">
           <span>Servicios adicionales</span>
-          {services.map((service) => (
-            <div className="flex justify-between text-sm">
+          {services.map((service, idx) => (
+            <div key={idx} className="flex justify-between text-sm">
               <span>{service.name}</span>
               <span>S/{service.price}</span>
             </div>

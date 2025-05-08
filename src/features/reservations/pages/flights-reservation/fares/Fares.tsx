@@ -11,15 +11,6 @@ const Fares = () => {
   const { data: fares } = useFaresByFlightId(flightId ? Number(flightId) : 0);
   const navigate = useNavigate();
 
-  function formatHour(dateString: string) {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-  }
-
   return (
     <div className="container mx-auto">
       <PageHeader
@@ -36,8 +27,8 @@ const Fares = () => {
           destinationCity={selectedFlight?.destination || ""}
           flightNumber={selectedFlight?.flightNumber || ""}
           duration={selectedFlight?.duration || ""}
-          arrivalTime={formatHour(selectedFlight?.arrivalTime || "")}
-          departureTime={formatHour(selectedFlight?.departureTime || "")}
+          arrivalTime={selectedFlight!.arrivalTime}
+          departureTime={selectedFlight!.departureTime}
           airportCodeOrigin={selectedFlight?.airportCodeOrigin || ""}
           airportCodeDestination={selectedFlight?.airportCodeDestination || ""}
           showExtras={false}

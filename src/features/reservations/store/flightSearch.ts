@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { PassengerFormValues } from "../schema/passengerForm.schema";
 import { Fare } from "../types/fare";
 import { Flight } from "../types/flight";
+import { FlightAdditionalService } from "../types/services";
 
 export enum TripType {
   ONE_WAY = "one-way",
@@ -26,6 +28,12 @@ interface FlightSearchState {
   setSelectedFlight: (flight: Flight) => void;
   selectedFare?: Fare;
   setSelectedFare: (fare: Fare) => void;
+  passengers: PassengerFormValues[];
+  setPassengers: (passengers: PassengerFormValues[]) => void;
+  selectedSeat?: string;
+  setSelectedSeat: (seat: string) => void;
+  selectedServices: FlightAdditionalService[];
+  setSelectedServices: (services: FlightAdditionalService[]) => void;
 }
 
 export const useFlightSearch = create<FlightSearchState>()(
@@ -46,6 +54,12 @@ export const useFlightSearch = create<FlightSearchState>()(
       selectedFare: undefined,
       setSelectedFare: (fare: Fare) => set({ selectedFare: fare }),
       setSearch: (data) => set((state) => ({ ...state, ...data })),
+      passengers: [],
+      setPassengers: (passengers: PassengerFormValues[]) => set({ passengers }),
+      selectedSeat: undefined,
+      setSelectedSeat: (seat: string) => set({ selectedSeat: seat }),
+      selectedServices: [],
+      setSelectedServices: (services) => set({ selectedServices: services }),
       resetSearch: () =>
         set({
           origin: "",

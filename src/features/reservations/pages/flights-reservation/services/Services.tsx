@@ -1,36 +1,52 @@
+import { useServices } from "@/features/reservations/hooks/useServices";
+import { useFlightSearch } from "@/features/reservations/store/flightSearch";
+import { FlightAdditionalService } from "@/features/reservations/types/services";
+import iconMap from "@/features/reservations/utils/serviceIcons";
 import { PageHeader } from "@/shared/page-header";
 import { Button } from "@/shared/ui/button";
-import {
-  ArrowRight,
-  Briefcase,
-  Coffee,
-  Plane,
-  Utensils,
-  Wifi,
-} from "lucide-react";
+import { ArrowRight, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CardInformationFlight, ReservationSummary } from "../components";
 import { CardService } from "./components/CardService";
 
 const Services = () => {
+  const {
+    selectedFlight,
+    selectedSeat,
+    selectedServices,
+    setSelectedServices,
+  } = useFlightSearch();
+  const { data: services } = useServices(selectedFlight?.id);
+
+  const toggleService = (service: FlightAdditionalService) => {
+    if (selectedServices.some((s) => s.id === service.id)) {
+      setSelectedServices(selectedServices.filter((s) => s.id !== service.id));
+    } else {
+      setSelectedServices([...selectedServices, service]);
+    }
+  };
+
   return (
     <div className="container mx-auto">
       <PageHeader
-        backTo="/reservations/flights/1/seats"
+        backTo={`/reservations/flights/${selectedFlight?.id}/seats`}
         backLabel="Volver a asientos"
         title="Servicios adicionales"
         subtitle="Personaliza tu viaje con servicios adicionales"
       />
 
       <CardInformationFlight
-        airline="Alas de Plata"
-        flightNumber="AP1234"
-        arrivalTime="08:30"
-        departureTime="11:45"
+        airline={selectedFlight?.airline || ""}
+        flightNumber={selectedFlight?.flightNumber || ""}
+        arrivalTime={selectedFlight?.arrivalTime || ""}
+        departureTime={selectedFlight?.departureTime || ""}
         showExtras={false}
         showPriceSection={false}
-        farePrice=""
-        seatLabel="12A"
+        seatLabel={selectedSeat || ""}
+        airportCodeDestination={selectedFlight?.destination || ""}
+        airportCodeOrigin={selectedFlight?.origin || ""}
+        destinationCity={selectedFlight?.airportCodeDestination || ""}
+        originCity={selectedFlight?.airportCodeOrigin || ""}
       />
 
       <div className="grid grid-cols-3 gap-4 py-8">
@@ -39,43 +55,25 @@ const Services = () => {
             Servicios adicionales disponibles
           </h2>
 
-          <CardService
-            title="Equipaje adicional (23kg)"
-            description="Añade una maleta facturada de hasta 23kg"
-            price="35"
-            icon={Briefcase}
-          />
-          <CardService
-            title="Comida a bordo"
-            description="Incluye comida caliente y bebida durante el vuelo"
-            price="15"
-            icon={Utensils}
-          />
-
-          <CardService
-            title="Wi-Fi a bordo"
-            description="Incluye comida caliente y bebida durante el vuelo"
-            price="10"
-            icon={Wifi}
-          />
-
-          <CardService
-            title="Embarque prioritario"
-            description="Sé de los primeros en embarcar"
-            price="8"
-            icon={Plane}
-          />
-
-          <CardService
-            title="Acceso a sala VIP"
-            description="Disfruta de la sala VIP antes de tu vuelo"
-            price="25"
-            icon={Coffee}
-          />
+          {services?.map((service) => (
+            <CardService
+              key={service.id}
+              title={service.additionalService.name}
+              description={service.additionalService.description}
+              price={service.additionalService.price}
+              icon={iconMap[service.additionalService.icon] || Briefcase}
+              checked={selectedServices.some((s) => s.id === service.id)}
+              onCheckedChange={() => toggleService(service)}
+            />
+          ))}
 
           <div className="flex justify-between items-center">
-            <span>0 servicios seleccionados</span>
-            <Link to="/reservations/flights/1/payment">
+            <span>
+              {selectedServices.length} servicio
+              {selectedServices.length !== 1 ? "s" : ""} seleccionado
+              {selectedServices.length !== 1 ? "s" : ""}
+            </span>
+            <Link to={`/reservations/flights/${selectedFlight?.id}/payment`}>
               <Button className="cursor-pointer">
                 Continua al pago <ArrowRight />
               </Button>

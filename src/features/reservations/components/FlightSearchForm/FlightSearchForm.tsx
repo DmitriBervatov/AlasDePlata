@@ -26,7 +26,7 @@ import { es } from "date-fns/locale";
 import { CalendarIcon, Minus, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useGetFlightClasses } from "../../hooks/useFLights";
+import { useGetFlightClasses } from "../../hooks/useFlights";
 import {
   flightSearchSchema,
   FlightSearchValues,
@@ -41,8 +41,8 @@ const FlightSearchForm = () => {
     resolver: zodResolver(flightSearchSchema),
     defaultValues: {
       ...flightSearch,
-      departureDate: flightSearch.departureDate ?? undefined,
-      returnDate: flightSearch.returnDate ?? undefined,
+      departureDate: flightSearch.departureDate ? new Date(flightSearch.departureDate) : undefined,
+      returnDate: flightSearch.returnDate ? new Date(flightSearch.returnDate) : undefined,
     },
   });
 
@@ -139,42 +139,46 @@ const FlightSearchForm = () => {
           <FormField
             control={form.control}
             name="departureDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fecha de salida</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal flex items-center justify-start cursor-pointer"
-                        )}
-                      >
-                        <CalendarIcon />
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: es })
-                        ) : (
-                          <>
-                            <span className="text-left">Selecciona fecha</span>
-                          </>
-                        )}
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                      disabled={(date) => date < new Date()}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Fecha de salida</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal flex items-center justify-start cursor-pointer"
+                          )}
+                        >
+                          <CalendarIcon />
+                          {field.value ? (
+                            format(field.value, "PPP", { locale: es })
+                          ) : (
+                            <>
+                              <span className="text-left">
+                                Selecciona fecha
+                              </span>
+                            </>
+                          )}
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        initialFocus
+                        disabled={(date) => date < new Date()}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
           <FormField
             control={form.control}
