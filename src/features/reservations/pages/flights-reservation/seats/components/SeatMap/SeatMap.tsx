@@ -4,7 +4,10 @@ import React from "react";
 interface SeatMapProps {
   seatRows: number[];
   seatLetters: string[];
-  seatMap: Record<string, { seatType: SeatType; seatStatus: SeatStatus }>;
+  seatMap: Record<
+    string,
+    { seatType: SeatType; seatStatus: SeatStatus; extraPrice: number }
+  >;
   selectedSeat: string | null;
   setSelectedSeat: (seat: string) => void;
 }
@@ -19,11 +22,12 @@ const SeatMap = ({
   const getSeatInfo = (
     row: number,
     letter: string
-  ): { seatType: SeatType; seatStatus: SeatStatus } => {
+  ): { seatType: SeatType; seatStatus: SeatStatus; extraPrice: number } => {
     return (
       seatMap[`${row}${letter}`] || {
         seatType: "normal",
         seatStatus: "available",
+        extraPrice: 0,
       }
     );
   };
@@ -47,7 +51,10 @@ const SeatMap = ({
           <span className="w-6 text-right text-xs text-gray-500">{row}</span>
           {seatLetters.map((letter, index) => {
             const seatId = `${row}${letter}`;
-            const { seatStatus, seatType } = getSeatInfo(row, letter);
+            const { seatStatus, seatType, extraPrice } = getSeatInfo(
+              row,
+              letter
+            );
             const isSelected = selectedSeat === seatId;
 
             let seatClass =
@@ -83,6 +90,7 @@ const SeatMap = ({
                       : handleClick
                   }
                   aria-disabled={seatStatus.toLowerCase() === "occupied"}
+                  title={extraPrice > 0 ? `+S/${extraPrice}` : "Sin recargo"}
                 >
                   <span className="text-xs">
                     {row}

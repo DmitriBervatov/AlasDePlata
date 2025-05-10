@@ -22,3 +22,7 @@ export function parseDate(date: unknown): Date | null {
   }
   return null;
 }
+
+export function formatHourSimple(hour: number): string {
+  return `${hour.toString().padStart(2, "0")}:00`;
+}

@@ -4,6 +4,7 @@ import {
   passengerSchema,
 } from "@/features/reservations/schema/passengerForm.schema";
 import { useFlightSearch } from "@/features/reservations/store/flightSearch";
+import { getPassengerBreakdown } from "@/features/reservations/utils/passengerBreakdown";
 import { PageHeader } from "@/shared/page-header";
 import { Button } from "@/shared/ui/button";
 import {
@@ -31,7 +32,8 @@ import { useNavigate } from "react-router-dom";
 import { CardInformationFlight, ReservationSummary } from "../components";
 
 const Passengers = () => {
-  const { selectedFlight, setPassengers, selectedFare } = useFlightSearch();
+  const { selectedFlight, setPassengers, selectedFare, passengers, search } =
+    useFlightSearch();
   const navigate = useNavigate();
   const form = useForm<PassengerFormValues>({
     resolver: zodResolver(passengerSchema),
@@ -270,13 +272,50 @@ const Passengers = () => {
                   <FormField
                     control={form.control}
                     name="documentNumber"
-                    render={({ field }) => (
-                      <FormItem className="col-span-2 w-full">
-                        <FormControl>
-                          <Input placeholder="Número de documento" {...field} />
-                        </FormControl>
-                      </FormItem>
-                    )}
+                    render={({ field }) => {
+                      const docType = form.watch("documentType");
+
+                      if (docType === "dni") {
+                        return (
+                          <FormItem className="col-span-2 w-full">
+                            <FormControl>
+                              <Input
+                                placeholder="Número de documento"
+                                inputMode="numeric"
+                                maxLength={8}
+                                value={field.value}
+                                onChange={(e) => {
+                                  const value = e.target.value
+                                    .replace(/\D/g, "")
+                                    .slice(0, 8);
+                                  field.onChange(value);
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }
+
+                      return (
+                        <FormItem className="col-span-2 w-full">
+                          <FormControl>
+                            <Input
+                              placeholder="Número de documento"
+                              maxLength={9}
+                              value={field.value}
+                              onChange={(e) => {
+                                const value = e.target.value
+                                  .replace(/[^a-zA-Z0-9]/g, "")
+                                  .slice(0, 9);
+                                field.onChange(value.toUpperCase());
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
                   />
                 </div>
               </div>
@@ -383,32 +422,34 @@ const Passengers = () => {
                 </div>
               </div>
 
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="col-span-2">
-                    <FormLabel>Correo Electronico</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="Email" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem className="col-span-2">
-                    <FormLabel>Celular</FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="Celular" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="col-span-2 flex gap-2">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Correo Electronico</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="Email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Celular</FormLabel>
+                      <FormControl>
+                        <Input type="number" placeholder="Celular" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <div className="col-span-2">
                 <Button className="w-full cursor-pointer" type="submit">
@@ -421,14 +462,16 @@ const Passengers = () => {
         <ReservationSummary
           flight={
             <>
-              Lima (LM) <ArrowRight className="w-4 h-4" /> Nueva York(JFK)
+              {selectedFlight?.origin} {selectedFlight?.airportCodeOrigin}
+              <ArrowRight className="w-4 h-4" />
+              {selectedFlight?.destination}{" "}
+              {selectedFlight?.airportCodeDestination}
             </>
           }
-          date="15 de Junio del 2025"
-          passengers="1 Adulto"
-          fare="Óptima"
-          subtotal="599"
-          total="599"
+          passengerBreakdown={getPassengerBreakdown(search)}
+          date={selectedFlight?.departureTime || ""}
+          passengers={passengers}
+          fare={selectedFare!}
         />
       </div>
     </div>

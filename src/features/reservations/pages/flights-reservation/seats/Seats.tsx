@@ -11,11 +11,11 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CardInformationFlight, ReservationSummary } from "../components";
 import SeatMap from "./components/SeatMap/SeatMap";
+import { getPassengerBreakdown } from "@/features/reservations/utils/passengerBreakdown";
 
 const Seats = () => {
-  const { selectedFlight, selectedSeat, setSelectedSeat, selectedFare } =
+  const { selectedFlight, selectedSeat, setSelectedSeat, selectedFare, passengers, search } =
     useFlightSearch();
-  console.log(selectedFare);
   const { data: seats } = useSeatMap(selectedFlight!.id);
 
   const seatRows =
@@ -38,14 +38,22 @@ const Seats = () => {
 
   const seatMap: Record<
     string,
-    { seatType: SeatType; seatStatus: SeatStatus }
+    { seatType: SeatType; seatStatus: SeatStatus; extraPrice: number }
   > = {};
   seats?.forEach((seat: Seat) => {
     seatMap[seat.seatNumber] = {
       seatType: seat.seatType,
       seatStatus: seat.seatStatus,
+      extraPrice: seat.extraPrice,
     };
   });
+
+  const seatExtraPrice = selectedSeat && seatMap[selectedSeat] ? seatMap[selectedSeat].extraPrice : 0;
+
+  const handleSelectSeat = (seatId: string) => {
+    const extraPrice = seatMap[seatId]?.extraPrice ?? 0;
+    setSelectedSeat(seatId, extraPrice);
+  }
 
   return (
     <div className="container mx-auto">
@@ -121,7 +129,7 @@ const Seats = () => {
               seatLetters={seatLetters}
               seatMap={seatMap}
               selectedSeat={selectedSeat!}
-              setSelectedSeat={setSelectedSeat}
+              setSelectedSeat={handleSelectSeat}
             />
           </div>
 
@@ -141,15 +149,18 @@ const Seats = () => {
         <ReservationSummary
           flight={
             <>
-              Lima (LM) <ArrowRight className="w-4 h-4" /> Nueva York(JFK)
+              {selectedFlight?.origin} {selectedFlight?.airportCodeOrigin}
+              <ArrowRight className="w-4 h-4" />
+              {selectedFlight?.destination}{" "}
+              {selectedFlight?.airportCodeDestination}
             </>
           }
-          date="15 de Junio del 2025"
-          passengers="1 Adulto"
-          fare="Óptima"
-          seat="24E"
-          subtotal="599"
-          total="599"
+          date={selectedFlight!.departureTime}
+          seat={selectedSeat}
+          seatExtraPrice={seatExtraPrice}
+          passengerBreakdown={getPassengerBreakdown(search)}
+          fare={selectedFare!}
+          passengers={passengers}
         />
       </div>
     </div>

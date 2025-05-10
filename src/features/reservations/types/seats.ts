@@ -9,6 +9,7 @@ export interface Seat {
     flightClass: string;
     seatType: SeatType;
     seatStatus: SeatStatus;
+    extraPrice: number;
 }
 
 export type SeatMap = Record<string, SeatType>;

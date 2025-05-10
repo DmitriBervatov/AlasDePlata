@@ -15,6 +15,8 @@ const Services = () => {
     selectedSeat,
     selectedServices,
     setSelectedServices,
+    selectedFare,
+    passengers,
   } = useFlightSearch();
   const { data: services } = useServices(selectedFlight?.id);
 
@@ -84,19 +86,18 @@ const Services = () => {
         <ReservationSummary
           flight={
             <>
-              Lima (LM) <ArrowRight className="w-4 h-4" /> Nueva York(JFK)
+              {selectedFlight?.origin} {selectedFlight?.airportCodeOrigin}
+              <ArrowRight className="w-4 h-4" />
+              {selectedFlight?.destination}{" "}
+              {selectedFlight?.airportCodeDestination}
             </>
           }
-          date="15 de Junio del 2025"
-          passengers="1 Adulto"
-          fare="Óptima"
-          seat="24E"
-          subtotal="599"
-          total="599"
-          services={[
-            { name: "Equipaje adicional (23kg)", price: 35 },
-            { name: "Wi-Fi a bordo", price: 10 },
-          ]}
+          date={selectedFlight!.departureTime}
+          passengers={passengers.length.toString()}
+          fare={selectedFare!.flightClassName}
+          seat={selectedSeat}
+          subtotal={selectedFare!.price}
+          total={selectedFare!.price}
         />
       </div>
     </div>

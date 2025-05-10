@@ -34,16 +34,12 @@ import {
 import { useFlightSearch } from "../../store/flightSearch";
 
 const FlightSearchForm = () => {
-  const { setSearch, ...flightSearch } = useFlightSearch();
+  const { search, setSearch } = useFlightSearch();
   const navigate = useNavigate();
 
   const form = useForm<FlightSearchValues>({
     resolver: zodResolver(flightSearchSchema),
-    defaultValues: {
-      ...flightSearch,
-      departureDate: flightSearch.departureDate ? new Date(flightSearch.departureDate) : undefined,
-      returnDate: flightSearch.returnDate ? new Date(flightSearch.returnDate) : undefined,
-    },
+    defaultValues: search,
   });
 
   const { data: destinations } = useGetDestinations();
@@ -298,7 +294,7 @@ const FlightSearchForm = () => {
             />
             <FormField
               control={form.control}
-              name="teens"
+              name="children"
               render={({ field }) => (
                 <FormItem className="flex justify-between">
                   <FormLabel className="flex flex-col">

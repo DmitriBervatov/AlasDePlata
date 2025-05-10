@@ -4,9 +4,9 @@ export interface FlightSearchParams {
     destination: string;
     departureDate: string;
     returnDate?: string;
-    travelClass: string;
-    adults: number;
-    children: number;
-    infants: number;
-    tripType: string;
+    travelClass?: string;
+    adults?: number;
+    children?: number;
+    infants?: number;
+    tripType?: string;
 }

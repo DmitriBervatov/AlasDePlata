@@ -1,4 +1,6 @@
+import { useFlightsDetailSearch } from "@/features/reservations/hooks/useFlights";
 import { useFlightSearch } from "@/features/reservations/store/flightSearch";
+import { formatHourSimple, parseDate } from "@/lib/dateFormat";
 import { PageHeader } from "@/shared/page-header";
 import { Button } from "@/shared/ui/button";
 import { Checkbox } from "@/shared/ui/checkbox";
@@ -14,49 +16,25 @@ import { Slider } from "@/shared/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { useState } from "react";
 import { CardInformationFlight } from "../components";
-import { useFlightsDetailSearch } from "@/features/reservations/hooks/useFlights";
-import { parseDate } from "@/lib/dateFormat";
 
 const Flights = () => {
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [departureTimeRange, setDepartureTimeRange] = useState([0, 24]);
   const [arrivalTimeRange, setArrivalTimeRange] = useState([0, 24]);
 
-  const flightSearch = useFlightSearch();
+  const { search } = useFlightSearch();
 
-  const departureDate = parseDate(flightSearch.departureDate);
-  const returnDate = parseDate(flightSearch.returnDate);
+  const departureDate = parseDate(search.departureDate);
 
   const params = {
-    origin: flightSearch.origin,
-    destination: flightSearch.destination,
+    origin: search.origin,
+    destination: search.destination,
     departureDate: departureDate
-      ?  departureDate.toISOString().split("T")[0]
+      ? departureDate.toISOString().split(".")[0]
       : "",
-    returnDate: returnDate
-      ? returnDate.toISOString().split("T")[0]
-      : "",
-    travelClass: flightSearch.travelClass,
-    adults: flightSearch.adults,
-    children: flightSearch.children,
-    infants: flightSearch.infants,
-    tripType: flightSearch.tripType,
   };
 
   const { data: flights } = useFlightsDetailSearch(params);
-
-  const formatTime = (hour: number) => {
-    return `${hour.toString().padStart(2, "0")}:00`;
-  };
-
-  function formatHour(dateString: string) {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-  }
 
   return (
     <div className="container mx-auto">
@@ -101,10 +79,10 @@ const Flights = () => {
                 />
                 <div className="flex justify-between">
                   <span className="text-sm">
-                    {formatTime(departureTimeRange[0])}
+                    {formatHourSimple(departureTimeRange[0])}
                   </span>
                   <span className="text-sm">
-                    {formatTime(departureTimeRange[1])}
+                    {formatHourSimple(departureTimeRange[1])}
                   </span>
                 </div>
               </div>
@@ -119,10 +97,10 @@ const Flights = () => {
                 />
                 <div className="flex justify-between">
                   <span className="text-sm">
-                    {formatTime(arrivalTimeRange[0])}
+                    {formatHourSimple(arrivalTimeRange[0])}
                   </span>
                   <span className="text-sm">
-                    {formatTime(arrivalTimeRange[1])}
+                    {formatHourSimple(arrivalTimeRange[1])}
                   </span>
                 </div>
               </div>
@@ -196,8 +174,8 @@ const Flights = () => {
                     key={flight.id}
                     airline={flight.airline}
                     flightNumber={flight.flightNumber}
-                    departureTime={formatHour(flight.departureTime)}
-                    arrivalTime={formatHour(flight.arrivalTime)}
+                    departureTime={flight.departureTime}
+                    arrivalTime={flight.arrivalTime}
                     showFare={false}
                     originCity={flight.origin}
                     destinationCity={flight.destination}

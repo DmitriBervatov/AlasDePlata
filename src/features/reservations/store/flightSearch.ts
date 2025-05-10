@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { FlightSearchValues } from "../schema/flight-search.schema";
 import { PassengerFormValues } from "../schema/passengerForm.schema";
 import { Fare } from "../types/fare";
 import { Flight } from "../types/flight";
@@ -12,18 +13,8 @@ export enum TripType {
 }
 
 interface FlightSearchState {
-  origin: string;
-  destination: string;
-  departureDate: Date | null;
-  returnDate: Date | null;
-  adults: number;
-  teens: number;
-  children: number;
-  infants: number;
-  travelClass: string;
-  tripType: TripType;
-  setSearch: (data: Partial<FlightSearchState>) => void;
-  resetSearch: () => void;
+  search: FlightSearchValues;
+  setSearch: (data: Partial<FlightSearchValues>) => void;
   selectedFlight?: Flight;
   setSelectedFlight: (flight: Flight) => void;
   selectedFare?: Fare;
@@ -31,7 +22,8 @@ interface FlightSearchState {
   passengers: PassengerFormValues[];
   setPassengers: (passengers: PassengerFormValues[]) => void;
   selectedSeat?: string;
-  setSelectedSeat: (seat: string) => void;
+  selectedSeatExtraPrice?: number;
+  setSelectedSeat: (seat: string, extraPrice?: number) => void;
   selectedServices: FlightAdditionalService[];
   setSelectedServices: (services: FlightAdditionalService[]) => void;
 }
@@ -39,45 +31,33 @@ interface FlightSearchState {
 export const useFlightSearch = create<FlightSearchState>()(
   persist(
     (set) => ({
-      origin: "",
-      destination: "",
-      departureDate: null,
-      returnDate: null,
-      adults: 0,
-      teens: 0,
-      children: 0,
-      infants: 0,
-      travelClass: "ECONOMY",
-      tripType: TripType.ONE_WAY,
+      search: {
+        origin: "",
+        destination: "",
+        departureDate: new Date(),
+        returnDate: undefined,
+        adults: 0,
+        teens: 0,
+        children: 0,
+        infants: 0,
+        tripType: TripType.ONE_WAY,
+        travelClass: "ECONOMY",
+      },
+      setSearch: (data) =>
+        set((state) => ({ search: { ...state.search, ...data } })),
       selectedFlight: undefined,
-      setSelectedFlight: (flight: Flight) => set({ selectedFlight: flight }),
+      setSelectedFlight: (flight) => set({ selectedFlight: flight }),
       selectedFare: undefined,
-      setSelectedFare: (fare: Fare) => set({ selectedFare: fare }),
-      setSearch: (data) => set((state) => ({ ...state, ...data })),
+      setSelectedFare: (fare) => set({ selectedFare: fare }),
       passengers: [],
-      setPassengers: (passengers: PassengerFormValues[]) => set({ passengers }),
+      setPassengers: (passengers) => set({ passengers }),
       selectedSeat: undefined,
-      setSelectedSeat: (seat: string) => set({ selectedSeat: seat }),
+      selectedSeatExtraPrice: 0,
+      setSelectedSeat: (seat, extraPrice = 0) =>
+        set({ selectedSeat: seat, selectedSeatExtraPrice: extraPrice }),
       selectedServices: [],
       setSelectedServices: (services) => set({ selectedServices: services }),
-      resetSearch: () =>
-        set({
-          origin: "",
-          destination: "",
-          departureDate: null,
-          returnDate: null,
-          adults: 0,
-          teens: 0,
-          children: 0,
-          infants: 0,
-          travelClass: "ECONOMY",
-        }),
     }),
-    {
-      name: "flight-search-storage",
-      partialize: (state) => ({
-        ...state,
-      }),
-    }
+    { name: "flight-search" }
   )
 );
