@@ -5,17 +5,23 @@ import {
   SeatStatus,
   SeatType,
 } from "@/features/reservations/types/seats";
+import { getPassengerBreakdown } from "@/features/reservations/utils/passengerBreakdown";
 import { PageHeader } from "@/shared/page-header";
 import { Button } from "@/shared/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CardInformationFlight, ReservationSummary } from "../components";
 import SeatMap from "./components/SeatMap/SeatMap";
-import { getPassengerBreakdown } from "@/features/reservations/utils/passengerBreakdown";
 
 const Seats = () => {
-  const { selectedFlight, selectedSeat, setSelectedSeat, selectedFare, passengers, search } =
-    useFlightSearch();
+  const {
+    selectedFlight,
+    selectedSeat,
+    setSelectedSeat,
+    selectedFare,
+    passengers,
+    search,
+  } = useFlightSearch();
   const { data: seats } = useSeatMap(selectedFlight!.id);
 
   const seatRows =
@@ -48,12 +54,15 @@ const Seats = () => {
     };
   });
 
-  const seatExtraPrice = selectedSeat && seatMap[selectedSeat] ? seatMap[selectedSeat].extraPrice : 0;
+  const seatExtraPrice =
+    selectedSeat && seatMap[selectedSeat]
+      ? seatMap[selectedSeat].extraPrice
+      : 0;
 
   const handleSelectSeat = (seatId: string) => {
     const extraPrice = seatMap[seatId]?.extraPrice ?? 0;
     setSelectedSeat(seatId, extraPrice);
-  }
+  };
 
   return (
     <div className="container mx-auto">
@@ -161,6 +170,7 @@ const Seats = () => {
           passengerBreakdown={getPassengerBreakdown(search)}
           fare={selectedFare!}
           passengers={passengers}
+          seatType={selectedSeat && seatMap[selectedSeat] ? seatMap[selectedSeat].seatType : undefined}
         />
       </div>
     </div>

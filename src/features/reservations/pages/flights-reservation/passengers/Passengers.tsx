@@ -7,9 +7,11 @@ import { useFlightSearch } from "@/features/reservations/store/flightSearch";
 import { getPassengerBreakdown } from "@/features/reservations/utils/passengerBreakdown";
 import { PageHeader } from "@/shared/page-header";
 import { Button } from "@/shared/ui/button";
+import { Calendar } from "@/shared/ui/calendar";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,6 +19,7 @@ import {
 } from "@/shared/ui/form";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shared/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group";
 import {
   Select,
@@ -26,7 +29,8 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight } from "lucide-react";
+import { format } from "date-fns";
+import { ArrowRight, CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { CardInformationFlight, ReservationSummary } from "../components";
@@ -37,7 +41,7 @@ const Passengers = () => {
   const navigate = useNavigate();
   const form = useForm<PassengerFormValues>({
     resolver: zodResolver(passengerSchema),
-    defaultValues: defaultPassengerValues,
+    defaultValues: passengers[0] || defaultPassengerValues,
   });
 
   const onSubmit = (data: PassengerFormValues) => {
@@ -118,19 +122,27 @@ const Passengers = () => {
                       >
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem
-                            value="man"
-                            id="man"
+                            value="male"
+                            id="male"
                             className="cursor-pointer"
                           />
-                          <Label htmlFor="man">Hombre</Label>
+                          <Label htmlFor="male">Hombre</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem
-                            value="woman"
-                            id="woman"
+                            value="female"
+                            id="female"
                             className="cursor-pointer"
                           />
-                          <Label htmlFor="woman">Mujer</Label>
+                          <Label htmlFor="female">Mujer</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem
+                            value="other"
+                            id="other"
+                            className="cursor-pointer"
+                          />
+                          <Label htmlFor="other">Otro</Label>
                         </div>
                       </RadioGroup>
                     </FormControl>
@@ -321,101 +333,44 @@ const Passengers = () => {
               </div>
 
               <div className="col-span-2 flex flex-col gap-2">
-                <span>Fecha de caducidad del documento</span>
                 <div className="flex justify-between gap-2">
                   <FormField
                     control={form.control}
-                    name="documentExpDay"
+                    name="documentExpiration"
                     render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormControl>
-                          <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                          >
-                            <SelectTrigger className="w-full cursor-pointer">
-                              <SelectValue placeholder="Dia" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {Array.from({ length: 31 }, (_, i) => i + 1).map(
-                                (day) => (
-                                  <SelectItem key={day} value={day.toString()}>
-                                    {day}
-                                  </SelectItem>
-                                )
-                              )}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="documentExpMonth"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormControl>
-                          <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                          >
-                            <SelectTrigger className="w-full cursor-pointer">
-                              <SelectValue placeholder="Mes" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {[
-                                "Enero",
-                                "Febrero",
-                                "Marzo",
-                                "Abril",
-                                "Mayo",
-                                "Junio",
-                                "Julio",
-                                "Agosto",
-                                "Septiembre",
-                                "Octubre",
-                                "Noviembre",
-                                "Diciembre",
-                              ].map((month, index) => (
-                                <SelectItem
-                                  key={month}
-                                  value={(index + 1).toString()}
-                                >
-                                  {month}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="documentExpYear"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormControl>
-                          <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                          >
-                            <SelectTrigger className="w-full cursor-pointer">
-                              <SelectValue placeholder="Año" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {Array.from(
-                                { length: 100 },
-                                (_, i) => 2025 - i
-                              ).map((year) => (
-                                <SelectItem key={year} value={year.toString()}>
-                                  {year}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
+                      <FormItem className="w-full flex flex-col">
+                        <FormLabel>Fecha de caducidad del documento</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className="justify-start text-left w-full cursor-pointer"
+                              >
+                                <CalendarIcon className="opacity-50 h-4 w-4" />
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Selecciona una fecha</span>
+                                )}
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(date) => field.onChange(date)}
+                              initialFocus
+                              fromYear={new Date().getFullYear()}
+                              toYear={new Date().getFullYear() + 20}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormDescription>
+                          Selecciona la fecha de caducidad del documento
+                        </FormDescription>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />

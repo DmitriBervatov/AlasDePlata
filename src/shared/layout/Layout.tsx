@@ -1,7 +1,8 @@
 import { motion, useScroll } from "motion/react";
 import { Outlet } from "react-router-dom";
-import Footer from "../Footer/Footer";
-import Navbar from "../Navbar/Navbar";
+import Footer from "../footer/Footer";
+import Navbar from "../navbar/Navbar";
+import { Toaster } from "../ui/sonner";
 
 const Layout = () => {
   const { scrollYProgress } = useScroll();
@@ -19,6 +20,7 @@ const Layout = () => {
           className="top-0 left-0 right-0 h-1 bg-fifth-alas-de-plata"
         />
         <Outlet />
+        <Toaster />
       </main>
       <Footer />
     </div>

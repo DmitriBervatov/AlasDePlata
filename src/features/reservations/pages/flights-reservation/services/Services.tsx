@@ -17,6 +17,7 @@ const Services = () => {
     setSelectedServices,
     selectedFare,
     passengers,
+    selectedSeatExtraPrice,
   } = useFlightSearch();
   const { data: services } = useServices(selectedFlight?.id);
 
@@ -93,11 +94,11 @@ const Services = () => {
             </>
           }
           date={selectedFlight!.departureTime}
-          passengers={passengers.length.toString()}
-          fare={selectedFare!.flightClassName}
           seat={selectedSeat}
-          subtotal={selectedFare!.price}
-          total={selectedFare!.price}
+          fare={selectedFare!}
+          services={selectedServices}
+          passengers={passengers}
+          seatExtraPrice={selectedSeatExtraPrice}
         />
       </div>
     </div>

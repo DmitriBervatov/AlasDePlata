@@ -1,6 +1,7 @@
 import { PassengerFormValues } from "@/features/reservations/schema/passengerForm.schema";
 import { Fare } from "@/features/reservations/types/fare";
-import { AdditionalService } from "@/features/reservations/types/services";
+import { SeatType } from "@/features/reservations/types/seats";
+import { FlightAdditionalService } from "@/features/reservations/types/services";
 import { formatDateLong } from "@/lib/dateFormat";
 import { formatCurrency } from "@/lib/moneyFormat";
 import { Separator } from "@/shared/ui/separator";
@@ -12,8 +13,9 @@ interface ReservationSummaryProps {
   fare: Fare;
   seat?: string;
   seatExtraPrice?: number;
-  services?: AdditionalService[];
+  services?: FlightAdditionalService[];
   passengerBreakdown?: string;
+  seatType?: SeatType;
 }
 
 const ReservationSummary = ({
@@ -25,11 +27,15 @@ const ReservationSummary = ({
   seatExtraPrice = 0,
   services = [],
   passengerBreakdown,
+  seatType,
 }: ReservationSummaryProps) => {
-
   const passengerCount = passengers.length;
   const subtotal = fare.price * passengerCount;
-  const servicesTotal = services.reduce((acc, s) => acc + s.price, 0);
+
+  const servicesTotal = services.reduce(
+    (acc, s) => acc + s.additionalService.price,
+    0
+  );
   const total = subtotal + servicesTotal + seatExtraPrice;
 
   return (
@@ -59,8 +65,18 @@ const ReservationSummary = ({
       {seat && (
         <div className="flex flex-col">
           <span>Asiento</span>
-          <span>{seat}</span>
-          <span className="text-xs text-gray-500">Sin cargo adicional</span>
+          <span className="flex flex-col">
+            {seat}
+            {seatType && (
+              <span className="text-xs text-gray-500">
+                {seatType.toLowerCase() === "premium"
+                  ? `+${formatCurrency(seatExtraPrice)} (Asiento premium)`
+                  : seatType.toLowerCase() === "emergency_exit"
+                  ? `+${formatCurrency(seatExtraPrice)} (Salida de emergencia)`
+                  : "Sin cargo adicional"}
+              </span>
+            )}
+          </span>
         </div>
       )}
 
@@ -69,8 +85,8 @@ const ReservationSummary = ({
           <span>Servicios adicionales</span>
           {services.map((service, idx) => (
             <div key={idx} className="flex justify-between text-sm">
-              <span>{service.name}</span>
-              <span>S/{service.price}</span>
+              <span>{service.additionalService.name}</span>
+              <span>S/{service.additionalService.price}</span>
             </div>
           ))}
         </div>
@@ -83,7 +99,7 @@ const ReservationSummary = ({
           <span>Subtotal</span>
           <span>{formatCurrency(subtotal)}</span>
         </div>
-        {seat && seatExtraPrice > 0 && (
+        {seat && (
           <div className="flex items-center justify-between">
             <span>Asiento</span>
             <span>+{formatCurrency(seatExtraPrice)}</span>

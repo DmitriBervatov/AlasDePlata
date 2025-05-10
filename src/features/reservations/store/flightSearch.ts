@@ -26,6 +26,7 @@ interface FlightSearchState {
   setSelectedSeat: (seat: string, extraPrice?: number) => void;
   selectedServices: FlightAdditionalService[];
   setSelectedServices: (services: FlightAdditionalService[]) => void;
+  reset: () => void;
 }
 
 export const useFlightSearch = create<FlightSearchState>()(
@@ -57,6 +58,27 @@ export const useFlightSearch = create<FlightSearchState>()(
         set({ selectedSeat: seat, selectedSeatExtraPrice: extraPrice }),
       selectedServices: [],
       setSelectedServices: (services) => set({ selectedServices: services }),
+      reset: () =>
+        set({
+          search: {
+            origin: "",
+            destination: "",
+            departureDate: new Date(),
+            returnDate: undefined,
+            adults: 0,
+            teens: 0,
+            children: 0,
+            infants: 0,
+            tripType: TripType.ONE_WAY,
+            travelClass: "ECONOMY",
+          },
+          selectedFlight: undefined,
+          selectedFare: undefined,
+          passengers: [],
+          selectedSeat: undefined,
+          selectedSeatExtraPrice: 0,
+          selectedServices: [],
+        }),
     }),
     { name: "flight-search" }
   )

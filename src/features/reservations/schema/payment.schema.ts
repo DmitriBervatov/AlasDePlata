@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const paymentSchema = z.object({
-  paymentMethod: z.enum(["creditCard", "bank-transfer", "paypal"]),
+  paymentMethod: z.enum(["PAYPAL", "BANK_TRANSFER", "CREDIT_CARD"]),
   numberCard: z
     .string()
     .min(16, "El número de tarjeta debe tener 16 dígitos")
@@ -21,7 +21,7 @@ export const paymentSchema = z.object({
 export type PaymentFormValues = z.infer<typeof paymentSchema>;
 
 export const initialValues: PaymentFormValues = {
-    paymentMethod: "creditCard",
+    paymentMethod: "CREDIT_CARD",
     numberCard: "",
     ownerCard: "",
     month: "",

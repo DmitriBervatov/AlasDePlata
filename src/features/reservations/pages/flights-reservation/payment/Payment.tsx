@@ -20,10 +20,11 @@ import { Input } from "@/shared/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/shared/ui/radio-group";
 import { Separator } from "@/shared/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, CreditCard, Landmark } from "lucide-react";
+import { ArrowRight, CreditCard } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { RiPaypalLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { CardInformationFlight, ReservationSummary } from "../components";
 
 const Payment = () => {
@@ -32,8 +33,8 @@ const Payment = () => {
     selectedFare,
     passengers,
     selectedSeat,
+    selectedSeatExtraPrice,
     selectedServices,
-    resetSearch,
   } = useFlightSearch();
   const navigate = useNavigate();
   const { mutate: processPayment, isPending } = usePayment();
@@ -41,16 +42,43 @@ const Payment = () => {
   const form = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentSchema),
     defaultValues: initialValues,
+    mode: "onChange",
   });
 
   const onSubmit = (data: PaymentFormValues) => {
+    if (
+      !selectedFlight ||
+      !selectedFare ||
+      !passengers.length ||
+      !selectedSeat
+    ) {
+      toast.error("Faltan datos de la reserva.");
+      return;
+    }
+
+    const payload = {
+      payment: data,
+      reservation: {
+        flightId: selectedFlight.id,
+        fareId: selectedFare.id,
+        passengers,
+        seat: selectedSeat,
+        services: selectedServices.map((s) =>
+          s.additionalService ? s.additionalService.id : s.id
+        ),
+      },
+    };
+
+    console.log(payload);
+
     processPayment(data, {
       onSuccess: () => {
-        resetSearch();
+        toast.success("Pago realizado con éxito");
+        // reset();
         navigate(`/reservations/flights/${selectedFlight?.id}/confirmation`);
       },
-      onError: (error) => {
-        console.error("Error processing payment:", error);
+      onError: () => {
+        toast.error("Error procesando el pago. Intenta nuevamente");
       },
     });
   };
@@ -99,46 +127,54 @@ const Payment = () => {
                       className="flex flex-col gap-4"
                       disabled={isPending}
                     >
-                      <div className="border border-gray-300 p-4 rounded flex items-center gap-4">
+                      <label
+                        htmlFor="creditCard"
+                        className={`select-none border border-gray-300 p-4 rounded flex items-center gap-4 ${
+                          isPending ? "cursor-not-allowed" : "cursor-pointer"
+                        }`}
+                      >
                         <RadioGroupItem
-                          value="creditCard"
+                          id="creditCard"
+                          value="CREDIT_CARD"
                           className="cursor-pointer"
                           disabled={isPending}
                         />
-                        <FormLabel
-                          htmlFor="creditCard"
-                          className="font-normal cursor-pointer"
-                        >
+                        <span className="font-normal flex items-center gap-2">
                           <CreditCard /> Tarjeta de crédito o débito
-                        </FormLabel>
-                      </div>
-                      <div className="border border-gray-300 p-4 rounded flex items-center gap-4">
+                        </span>
+                      </label>
+                      <label
+                        htmlFor="bank-transfer"
+                        className={`select-none border border-gray-300 p-4 rounded flex items-center gap-4 ${
+                          isPending ? "cursor-not-allowed" : "cursor-pointer"
+                        }`}
+                      >
                         <RadioGroupItem
-                          value="bank-transfer"
+                          id="bank-transfer"
+                          value="BANK_TRANSFER"
                           className="cursor-pointer"
                           disabled={isPending}
                         />
-                        <FormLabel
-                          htmlFor="bank-transfer"
-                          className="font-normal cursor-pointer"
-                        >
-                          <Landmark /> Transferencia bancaria
-                        </FormLabel>
-                      </div>
-                      <div className="border border-gray-300 p-4 rounded flex items-center gap-4">
+                        <span className="font-normal flex items-center gap-2">
+                          <CreditCard /> Transferencia bancaria
+                        </span>
+                      </label>
+                      <label
+                        htmlFor="paypal"
+                        className={`select-none border border-gray-300 p-4 rounded flex items-center gap-4 ${
+                          isPending ? "cursor-not-allowed" : "cursor-pointer"
+                        }`}
+                      >
                         <RadioGroupItem
-                          value="paypal"
                           id="paypal"
+                          value="PAYPAL"
                           className="cursor-pointer"
                           disabled={isPending}
                         />
-                        <FormLabel
-                          htmlFor="paypal"
-                          className="font-normal cursor-pointer"
-                        >
+                        <span className="font-normal flex items-center gap-2">
                           <RiPaypalLine className="w-6 h-6" /> PayPal
-                        </FormLabel>
-                      </div>
+                        </span>
+                      </label>
                     </RadioGroup>
                   </FormItem>
                 )}
@@ -146,7 +182,7 @@ const Payment = () => {
 
               <Separator />
 
-              {form.watch("paymentMethod") === "creditCard" && (
+              {form.watch("paymentMethod") === "CREDIT_CARD" && (
                 <div className="flex flex-col gap-4">
                   <FormField
                     control={form.control}
@@ -266,7 +302,15 @@ const Payment = () => {
                 )}
               />
 
-              <Button type="submit" className="w-full" disabled={isPending}>
+              <Button
+                type="submit"
+                className="w-full cursor-pointer"
+                disabled={
+                  isPending ||
+                  !form.watch("termsAccepted") ||
+                  !form.formState.isValid
+                }
+              >
                 {isPending ? "Procesando..." : "Pagar y finalizar"}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
@@ -274,7 +318,7 @@ const Payment = () => {
           </Form>
         </div>
 
-        {/* <ReservationSummary
+        <ReservationSummary
           flight={
             <>
               {selectedFlight?.origin} ({selectedFlight?.airportCodeOrigin})
@@ -283,21 +327,13 @@ const Payment = () => {
               {selectedFlight?.airportCodeDestination}K)
             </>
           }
-          date={selectedFlight?.departureTime}
-          passengers={
-            passengersCount === 1
-              ? "1 Pasajero"
-              : `${passengersCount} Pasajeros`
-          }
-          fare={selectedFare?.flightClassName ?? ""}
+          passengers={passengers}
           seat={selectedSeat}
-          subtotal={subtotal.toString()}
-          total={total.toString()}
-          services={selectedServices.map((s) => ({
-            name: s.additionalService.name,
-            price: s.additionalService.price,
-          }))}
-        /> */}
+          date={selectedFlight!.departureTime}
+          fare={selectedFare!}
+          seatExtraPrice={selectedSeatExtraPrice}
+          services={selectedServices}
+        />
       </div>
     </div>
   );
